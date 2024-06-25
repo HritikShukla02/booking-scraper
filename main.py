@@ -27,8 +27,7 @@ except TimeoutException as ex:
 dest = driver.find_element(By.CSS_SELECTOR, value='input[name="ss"]')
 dest.send_keys('Jaipur', Keys.ENTER)
 
-time.sleep(PAUSE_TIME)
-# wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.b90aaa8bb3[data-testid="searchbox-dates-container"]')))
+# time.sleep(PAUSE_TIME)
 
 
 # date_picker = driver.find_element(By.CSS_SELECTOR, value='div.baca574774')
@@ -36,8 +35,9 @@ time.sleep(PAUSE_TIME)
 # date_picker.click()
 '#calendar-searchboxdatepicker >  table > tbody > tr > td > span[data-date="2024-06-27"]'
 
-time.sleep(PAUSE_TIME)
+# time.sleep(PAUSE_TIME)
 try:
+    # wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.b90aaa8bb3[data-testid="searchbox-dates-container"]')))
     check_in = driver.find_element(By.CSS_SELECTOR, value='div.e8314cc830 > span[data-date="2024-06-27"]')
     check_in.click()
 
@@ -49,7 +49,8 @@ try:
 except NoSuchElementException as ex:
     print("Exception has been thrown. " + str(ex))
 
-search = driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]') 
+search = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[type="submit"]')))
+# search = driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]') 
 search.click()
 
 wait.until(EC.element_to_be_clickable, 'h1[aria-live="assertive"]')
@@ -70,12 +71,13 @@ while True:
         break
     last_height = new_height
 
-    wait.until(EC.element_to_be_clickable, 'span.ad82e69f7d')
     try:
+        wait.until(EC.element_to_be_clickable, 'span.ad82e69f7d')
         load = driver.find_element(By.CSS_SELECTOR, value='button.bf33709ee1.a190bb5f27.b9d0a689f2.bb5314095f.b81c794d25.da4da790cd')
         load.click()
     except NoSuchElementException as ex:
         print("Error message: " + str(ex))
+
 
 
 
