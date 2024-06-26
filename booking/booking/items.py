@@ -8,5 +8,12 @@ import scrapy
 
 class BookingItem(scrapy.Item):
     # define the fields for your item here like:
-    # name = scrapy.Field()
+    name = scrapy.Field()
+    remark = scrapy.Field()
+    score = scrapy.Field()
+    review = scrapy.Field()
+    location = scrapy.Field()
+    # price = scrapy.Field()
+
+
     pass
