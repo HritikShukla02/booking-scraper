@@ -34,7 +34,7 @@ This web scraper is a powerful tool for anyone needing detailed and current info
 ### How to run:
 
 - **Download the repository**:  
-    - use command "git clone ".
+    - use command "git clone https://github.com/HritikShukla02/booking-scraper.git".
 
 - **Activate the virtual environment**:
     - Enter the folder *booking-scraper*.
@@ -45,10 +45,10 @@ This web scraper is a powerful tool for anyone needing detailed and current info
     - Scroll to bottom of page.
     - Update the variable **DEST** to the desired location.
     - Save the file.
--
+
 - **Run Spider**:
     - cd into the *spiders* folder.
-    -run command: "scrapy crawl booking_spider"
+    - run command: "scrapy crawl booking_spider"
 
 
 - **Output**:
