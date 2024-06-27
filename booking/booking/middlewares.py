@@ -12,11 +12,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from io import StringIO
 import time
 from datetime import date
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-
+from booking.settings import DEST
 #################################################################################################
 
 from scrapy import signals
@@ -191,7 +190,7 @@ class SeleniumMiddleware:
     def fill_details(self):
         self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[name="ss"]')))
         dest = self.driver.find_element(By.CSS_SELECTOR, value='input[name="ss"]')
-        dest.send_keys('Jaipur', Keys.ENTER)
+        dest.send_keys(DEST, Keys.ENTER)
 
         # self.driver.save_screenshot('Jaipur.png')
 
