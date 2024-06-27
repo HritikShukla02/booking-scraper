@@ -13,7 +13,7 @@ class BookingItem(scrapy.Item):
     score = scrapy.Field()
     review = scrapy.Field()
     location = scrapy.Field()
-    # price = scrapy.Field()
+    price = scrapy.Field()
 
 
     pass

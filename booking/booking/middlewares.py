@@ -14,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from io import StringIO
 import time
+from datetime import date
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 #################################################################################################
@@ -142,25 +143,30 @@ class SeleniumMiddleware:
         # chrome_options.add_argument("--disable-gpu")
         # chrome_options.add_argument("--window-size=1920x1080")
         # chrome_options.add_argument("--disable-software-rasterizer")
-        # # chrome_options.add_argument("--enable-logging")
-        # # chrome_options.add_argument("--v=1")
+        # chrome_options.add_argument("--enable-logging")
+        # chrome_options.add_argument("--v=1")
         # chrome_options.add_argument("--remote-debugging-port=9222")
 
 
-        # chrome_options.add_experimental_option('detach',True)
+        chrome_options.add_experimental_option('detach',True)
         # chrome_service = ChromeService(executable_path='./../chromedriver.exe', chrome_options=chrome_options)
         self.driver = webdriver.Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.driver, 10)
-        self.PAUSE_TIME = 10
+        self.PAUSE_TIME = 5
 
 
     def process_request(self, request, spider):
         self.driver.get(request.url)
         # Scroll to the bottom of the page
+        # self.driver.save_screenshot('before_popup.png')
 
-        
         self.close_popup()
+        # self.driver.save_screenshot('after_popup.png')
+
         self.fill_details()
+        time.sleep(self.PAUSE_TIME)
+
+        # self.driver.save_screenshot('after_details.png')
         self.scroll_to_bottom()
 
         # Wait for some elements to load, if necessary
@@ -174,6 +180,7 @@ class SeleniumMiddleware:
         return response
     
     def close_popup(self):
+
         try: 
             self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[aria-label="Dismiss sign in information."]')))
             popup_close = self.driver.find_element(By.CSS_SELECTOR,value='button[aria-label="Dismiss sign in information."]')
@@ -186,6 +193,9 @@ class SeleniumMiddleware:
         dest = self.driver.find_element(By.CSS_SELECTOR, value='input[name="ss"]')
         dest.send_keys('Jaipur', Keys.ENTER)
 
+        # self.driver.save_screenshot('Jaipur.png')
+
+
         time.sleep(self.PAUSE_TIME)
         # wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.b90aaa8bb3[data-testid="searchbox-dates-container"]')))
 
@@ -194,22 +204,24 @@ class SeleniumMiddleware:
 
         # date_picker.click()
         '#calendar-searchboxdatepicker >  table > tbody > tr > td > span[data-date="2024-06-27"]'
-
+        today = date.today().strftime("%d %B %Y")
+        
+        month_end = "28" + date.today().strftime(" %B %Y")
         time.sleep(self.PAUSE_TIME)
         try:
             self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.b90aaa8bb3[data-testid="searchbox-dates-container"]')))
 
-            date_picker = self.driver.find_element(By.CSS_SELECTOR, value='div.b90aaa8bb3')
-            date_picker.click()
-            self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'span[data-date="2024-06-27"] span')))
-            check_in = self.driver.find_element(By.CSS_SELECTOR, value='span[data-date="2024-06-27"] span')
+            # date_picker = self.driver.find_element(By.CSS_SELECTOR, value='div.b90aaa8bb3')
+            # date_picker.click()
+            self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, f'span[aria-label="{today}"]')))
+            check_in = self.driver.find_element(By.CSS_SELECTOR, value=f'span[aria-label="{today}"]')
             check_in.click()
 
             # time.sleep(PAUSE_TIME)
 
-            self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'span[data-date="2024-07-27"] span')))
+            self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, f'span[aria-label="{month_end}"]')))
 
-            check_out = self.driver.find_element(By.CSS_SELECTOR, value='span[data-date="2024-07-27"] span')
+            check_out = self.driver.find_element(By.CSS_SELECTOR, value=f'span[aria-label="{month_end}"]')
             check_out.click()
         except NoSuchElementException as ex:
             print("Exception has been thrown. " + str(ex))
