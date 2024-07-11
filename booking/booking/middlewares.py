@@ -4,11 +4,11 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 ################################################################################################
 
-from scrapy.http import HtmlResponse
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
+from scrapy.http import HtmlResponse
+from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -121,32 +121,10 @@ class BookingDownloaderMiddleware:
 
 class SeleniumMiddleware:
 
-    # @classmethod
-    # def from_crawler(cls, crawler):
-    #     middleware = cls()
-    #     crawler.signals.connect(middleware.spider_opened, signal=signals.spider_opened)
-    #     # crawler.signals.connect(middleware.spider_closed, signal=signals.spider_closed)
-    #     return middleware
-    # @classmethod
-    # def from_crawler(cls, crawler):
-    #     # This method is used by Scrapy to create your spiders.
-    #     s = cls()
-    #     crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
-    #     return s
+
     
     def __init__(self):
         chrome_options = Options()
-        # chrome_options.add_argument("--headless")  # To run Chrome in headless mode
-        # chrome_options.add_argument("--no-sandbox")
-        # chrome_options.add_argument("--disable-dev-shm-usage")
-        # chrome_options.add_argument("--disable-gpu")
-        # chrome_options.add_argument("--window-size=1920x1080")
-        # chrome_options.add_argument("--disable-software-rasterizer")
-        # chrome_options.add_argument("--enable-logging")
-        # chrome_options.add_argument("--v=1")
-        # chrome_options.add_argument("--remote-debugging-port=9222")
-
-
         chrome_options.add_experimental_option('detach',True)
         # chrome_service = ChromeService(executable_path='./../chromedriver.exe', chrome_options=chrome_options)
         self.driver = webdriver.Chrome(options=chrome_options)
@@ -156,28 +134,23 @@ class SeleniumMiddleware:
 
     def process_request(self, request, spider):
         self.driver.get(request.url)
-        # Scroll to the bottom of the page
-        # self.driver.save_screenshot('before_popup.png')
+
 
         self.close_popup()
-        # self.driver.save_screenshot('after_popup.png')
+ 
 
         self.fill_details()
+
+
         time.sleep(self.PAUSE_TIME)
-
-        # self.driver.save_screenshot('after_details.png')
         self.scroll_to_bottom()
-
-        # Wait for some elements to load, if necessary
-        # Example: wait until an element with class 'load-more-button' is visible
-
-        # self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'load-more-button')))
 
         # Get the HTML after scrolling
         body = self.driver.page_source
         response = HtmlResponse(url=self.driver.current_url, body=body, encoding='utf-8', request=request)
         return response
     
+
     def close_popup(self):
 
         try: 
@@ -187,28 +160,23 @@ class SeleniumMiddleware:
         except TimeoutException as ex:
             print("Exception has been thrown. " + str(ex))
 
+
     def fill_details(self):
+        '''----------------------Uncomment the lines in this function if you want to enter a custom check-out date------------------------'''
+
         self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[name="ss"]')))
         dest = self.driver.find_element(By.CSS_SELECTOR, value='input[name="ss"]')
         dest.send_keys(DEST, Keys.ENTER)
 
-        # self.driver.save_screenshot('Jaipur.png')
-
-
-        time.sleep(self.PAUSE_TIME)
-        # wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div.b90aaa8bb3[data-testid="searchbox-dates-container"]')))
-
-
-        # date_picker = self.driver.find_element(By.CSS_SELECTOR, value='button[data-testid="date-display-field-start"]')
-
-        # date_picker.click()
-        '#calendar-searchboxdatepicker >  table > tbody > tr > td > span[data-date="2024-06-27"]'
-        today = date.today().strftime("%d %B %Y")
         
-        month_end = "28" + date.today().strftime(" %B %Y")
         time.sleep(self.PAUSE_TIME)
+        today = date.today().strftime("%d %B %Y")
+        # month_end = "28" + date.today().strftime(" %B %Y")
+        time.sleep(self.PAUSE_TIME)
+
+
         try:
-            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.b90aaa8bb3[data-testid="searchbox-dates-container"]')))
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="searchbox-dates-container"]')))
 
             # date_picker = self.driver.find_element(By.CSS_SELECTOR, value='div.b90aaa8bb3')
             # date_picker.click()
@@ -217,25 +185,23 @@ class SeleniumMiddleware:
             check_in.click()
 
             # time.sleep(PAUSE_TIME)
-
-            self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, f'span[aria-label="{month_end}"]')))
-
-            check_out = self.driver.find_element(By.CSS_SELECTOR, value=f'span[aria-label="{month_end}"]')
-            check_out.click()
+            # self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, f'span[aria-label="{month_end}"]')))
+            # check_out = self.driver.find_element(By.CSS_SELECTOR, value=f'span[aria-label="{month_end}"]')
+            # check_out.click()
         except NoSuchElementException as ex:
             print("Exception has been thrown. " + str(ex))
         except TimeoutException as ex:
             print("Exception has been thrown. " + str(ex))
 
+    
         self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
         search = self.driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]') 
         search.click()
 
-        # self.wait.until(EC.element_to_be_clickable, 'h1[aria-live="assertive"]')
+        
 
     def scroll_to_bottom(self):
         # Scroll to the bottom of the page
-        # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         self.wait.until(EC.presence_of_element_located, 'h1[aria-live="assertive"]')
 
 
