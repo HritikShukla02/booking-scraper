@@ -41,8 +41,8 @@ This web scraper is a powerful tool for anyone needing detailed and current info
     - run the command: "source venv/Scripts/activate".
 
 -  **Enter the Location**: 
-    - Open the settings.py
-    - Scroll to bottom of page.
+    - Open the middlewares.py
+    - Scroll to SeleniumMiddleware class
     - Update the variable **DEST** to the desired location.
     - Save the file.
 
