@@ -53,3 +53,4 @@ This web scraper is a powerful tool for anyone needing detailed and current info
 
 - **Output**:
     - This spider genetares a json file as the output that you can find in booking folder after the script is successfully completed.
+    - Sample Output file "Output.json" is also included in the repository.
