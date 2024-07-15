@@ -128,8 +128,9 @@ class SeleniumMiddleware:
         chrome_options.add_experimental_option('detach',True)
         # chrome_service = ChromeService(executable_path='./../chromedriver.exe', chrome_options=chrome_options)
         self.driver = webdriver.Chrome(options=chrome_options)
-        self.wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 5)
         self.PAUSE_TIME = 5
+        self.DEST = "Jaipur"
 
 
     def process_request(self, request, spider):
