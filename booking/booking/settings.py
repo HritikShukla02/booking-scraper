@@ -41,10 +41,7 @@ ROBOTSTXT_OBEY = False
 #    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 #    "Accept-Language": "en",
 #}
-DOWNLOADER_MIDDLEWARES = {
-   "booking.middlewares.BookingDownloaderMiddleware": 543,
-   'booking.middlewares.SeleniumMiddleware': 400,
-}
+
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
@@ -54,9 +51,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    "booking.middlewares.BookingDownloaderMiddleware": 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+   "booking.middlewares.SeleniumMiddleware": 543,
+}
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
@@ -66,9 +63,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "booking.pipelines.BookingPipeline": 300,
-#}
+ITEM_PIPELINES = {
+   "booking.pipelines.BookingPipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
