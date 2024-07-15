@@ -136,16 +136,22 @@ class SeleniumMiddleware:
         self.driver.get(request.url)
 
 
-        self.close_popup()
- 
+       try:
+            self.close_popup()
 
-        self.fill_details()
+            time.sleep(self.PAUSE_TIME)
 
+            self.fill_details()
+        except:
+            self.close_popup()
 
-        time.sleep(self.PAUSE_TIME)
+            time.sleep(self.PAUSE_TIME)
+
+            self.fill_details()
+        
         self.scroll_to_bottom()
 
-        # Get the HTML after scrolling
+         # Get the HTML after scrolling
         body = self.driver.page_source
         response = HtmlResponse(url=self.driver.current_url, body=body, encoding='utf-8', request=request)
         return response
@@ -164,38 +170,33 @@ class SeleniumMiddleware:
     def fill_details(self):
         '''----------------------Uncomment the lines in this function if you want to enter a custom check-out date------------------------'''
 
-        self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'input[name="ss"]')))
+         # Entering Destination:
         dest = self.driver.find_element(By.CSS_SELECTOR, value='input[name="ss"]')
-        dest.send_keys(DEST, Keys.ENTER)
+        dest.send_keys(self.DEST, Keys.ENTER)
 
-        
-        time.sleep(self.PAUSE_TIME)
+        #Calculating today's date:
         today = date.today().strftime("%d %B %Y")
-        # month_end = "28" + date.today().strftime(" %B %Y")
         time.sleep(self.PAUSE_TIME)
 
 
+        #Picking the check in date:
         try:
-            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="searchbox-dates-container"]')))
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="searchbox-datepicker-calendar"]')))
+            check_in = self.driver.find_element(By.CSS_SELECTOR, value=f'span[aria-label="{today}"]')
+            check_in.click()
+        except TimeoutException as ex:
+            print("Exception has been thrown:" + str(ex))
 
-            # date_picker = self.driver.find_element(By.CSS_SELECTOR, value='div.b90aaa8bb3')
-            # date_picker.click()
-            self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, f'span[aria-label="{today}"]')))
+            date_picker = self.driver.find_element(By.CSS_SELECTOR, value='div[data-testid="searchbox-dates-container"]')
+            date_picker.click()
+
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-testid="searchbox-datepicker-calendar"]')))
             check_in = self.driver.find_element(By.CSS_SELECTOR, value=f'span[aria-label="{today}"]')
             check_in.click()
 
-            # time.sleep(PAUSE_TIME)
-            # self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, f'span[aria-label="{month_end}"]')))
-            # check_out = self.driver.find_element(By.CSS_SELECTOR, value=f'span[aria-label="{month_end}"]')
-            # check_out.click()
-        except NoSuchElementException as ex:
-            print("Exception has been thrown. " + str(ex))
-        except TimeoutException as ex:
-            print("Exception has been thrown. " + str(ex))
-
-    
-        self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button[type="submit"]')))
-        search = self.driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]') 
+        # Clicking the search button:
+        time.sleep(self.PAUSE_TIME)
+        search = self.driver.find_element(By.CSS_SELECTOR, value='button[type="submit"]')
         search.click()
 
         
@@ -229,5 +230,5 @@ class SeleniumMiddleware:
                 break
             last_height = new_height
 
-    def __del__(self):
+    def __del__(self): #This function closes the browser automatically after every run
         self.driver.quit()
