@@ -136,8 +136,7 @@ class SeleniumMiddleware:
     def process_request(self, request, spider):
         self.driver.get(request.url)
 
-
-       try:
+        try:
             self.close_popup()
 
             time.sleep(self.PAUSE_TIME)
